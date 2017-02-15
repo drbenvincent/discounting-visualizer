@@ -79,11 +79,17 @@ ui <- fixedPage(
     column(width = 6,
            h2("Discount function"),
            p("The discount function is a proposed cognitive model. Personally, I see discount functions as descriptive cognitive models, not as truely explanatory."),
+           withMathJax(
+             helpText('$$\\mathrm{discount~fraction}(k,delay)= \\exp(-k.delay)$$')
+           ),
            plotOutput("discountFunctionPlot")
     ),
     column(width = 6,
            h2("Example decision"),
            p("This plot shows the internal subjective value (y-axis) of the rewards (circles) as a function of time from now."),
+           withMathJax(
+             helpText('$$\\mathrm{subjective~value}(reward,delay,k)= reward \\times \\mathrm{discount~fraction}(k,delay) $$')
+           ),
            plotOutput("examplePlot")
     )
   )
