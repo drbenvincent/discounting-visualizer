@@ -13,11 +13,11 @@ defaultDA <- 180
 defaultRA <- 50
 defaultDB <- 365
 defaultRB <- 100
-defaultLogK <- -4.5
+defaultK <- 0.003
 
 
-hyperbolicDiscountFraction <- function(logk, delays){
-  return(1/(1+exp(logk)*delays))
+exponentialDiscountFraction <- function(k, delays){
+  return(exp(-k*delays))
 }
 
 ylimDemoPlot <- function(RA,RB){
@@ -40,14 +40,14 @@ ui <- fixedPage(
   # TOP ROW WITH INPUTS
   fixedRow(
     column(width = 4,
-           h2("Hyperbolic Discounting"),
-           HTML("<p>Welcome to the discounting demo thing. Written by Benjamin T. Vincent of <a href='http://www.inferenceLab.com'>inferenceLab</a>.</p>"),
-           wellPanel(sliderInput(inputId = "logk",
-                       label = "discounting parameter, log(k)",
-                       min = -10,
-                       max = 1,
-                       value = defaultLogK,
-                       step = 0.01)
+           h2("Exponential Discounting"),
+           HTML("<p>Welcome to the exponential demo thing. Written by Benjamin T. Vincent of <a href='http://www.inferenceLab.com'>inferenceLab</a>.</p>"),
+           wellPanel(sliderInput(inputId = "k",
+                       label = "discounting parameter, k",
+                       min = 0,
+                       max = 0.01,
+                       value = defaultK,
+                       step = 0.0001)
                      )
            ),
     column(width = 4,
@@ -97,7 +97,7 @@ ui <- fixedPage(
 server <- function(input, output){
   # DISCOUNT FUNCTION
   output$discountFunctionPlot <- renderPlot(
-    curve( hyperbolicDiscountFraction(input$logk, x),
+    curve( exponentialDiscountFraction(input$k, x),
            from = 0,
            to = max_delay,
            n = 1001,
@@ -109,7 +109,7 @@ server <- function(input, output){
   # EXAMPLE DECISION PLOT
   output$examplePlot <- renderPlot({
     # delayed reward
-    curve( hyperbolicDiscountFraction(input$logk, input$DB-x) * input$RB,
+    curve( exponentialDiscountFraction(input$k, input$DB-x) * input$RB,
            from = 0,
            to = input$DB,
            n = 1001,
@@ -120,7 +120,7 @@ server <- function(input, output){
     )
     
     # immediate reward
-    curve( hyperbolicDiscountFraction(input$logk, input$DA-x) * input$RA,
+    curve( exponentialDiscountFraction(input$k, input$DA-x) * input$RA,
            from = 0,
            to = input$DA,
            n = 1001,
